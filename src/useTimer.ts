@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function useTimer(stop: () => void, delay: number) {
   const [time, setTime] = useState<number>(delay / 1000);

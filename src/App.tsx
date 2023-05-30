@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import Game from "./Game.tsx";
+import { useState, useEffect } from "react";
+import Game from "./Game/index.tsx";
 import Time from "./Time.tsx";
 import "./App.scss";
 interface IMole {
