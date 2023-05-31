@@ -8,7 +8,7 @@ function Time({ setIsStarted }: ITime) {
   const timeState = localStorage.getItem("time");
   const { time } = useTimer(
     () => setIsStarted(false),
-    timeState ? Number(timeState) : 10000
+    timeState ? Number(timeState) : 60000
   );
 
   return <p>{time}</p>;

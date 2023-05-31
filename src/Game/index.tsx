@@ -6,8 +6,8 @@ interface IGame {
 }
 function Game({ moles, setMoles }: IGame) {
   useEffect(() => {
-    const intervalId = setInterval(generateAndUpdateRandomMole, 1000);
-    return () => clearInterval(intervalId);
+    const interval = setInterval(generateAndUpdateRandomMole, 1000);
+    return () => clearInterval(interval);
   }, [moles]);
 
   function generateAndUpdateRandomMole() {
