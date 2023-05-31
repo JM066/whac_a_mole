@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { LOCAL_STORAGE_KEY } from "./const";
 
 export default function useTimer(stop: () => void, delay: number) {
   const [time, setTime] = useState<number>(delay / 1000);
@@ -15,7 +16,7 @@ export default function useTimer(stop: () => void, delay: number) {
     if (time === 0) {
       stop();
     }
-    localStorage.setItem("time", JSON.stringify(time * 1000));
+    localStorage.setItem(LOCAL_STORAGE_KEY.TIME, JSON.stringify(time * 1000));
   }, [time]);
 
   return { time };

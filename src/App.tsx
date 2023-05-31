@@ -1,20 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { LOCAL_STORAGE_KEY, GAMEBOARD_ROWS } from "./const.ts";
 import Game from "./Game/index.tsx";
 import Time from "./Time/index.tsx";
 import Mole from "./Mole/index.tsx";
 import "./App.scss";
-const GAMEBOARD_ROWS = [
-  [0, 1],
-  [2, 3, 4, 5],
-  [6, 7, 8, 9, 10, 11],
-  [12, 13, 14, 15, 16, 17],
-  [18, 19, 20, 21],
-  [22, 23],
-];
+
 function App() {
   const [moles, setMoles] = useState<boolean[]>(Array(24).fill(false));
   const [score, setScore] = useState<number>(0);
-  const isStartedState = localStorage.getItem("isStarted");
+  const isStartedState = localStorage.getItem(LOCAL_STORAGE_KEY.IS_STARTED);
   const [isStarted, setIsStarted] = useState<boolean>(
     isStartedState ? JSON.parse(isStartedState) : false
   );
@@ -43,10 +37,7 @@ function App() {
               <Mole
                 key={i}
                 active={moles[active]}
-                onClick={() => {
-                  console.log("index", index, i);
-                  handleClick(active);
-                }}
+                onClick={() => handleClick(active)}
               />
             ))}
           </div>
@@ -54,7 +45,11 @@ function App() {
         <button
           className="start"
           onClick={() => {
-            localStorage.removeItem("time");
+            localStorage.removeItem(LOCAL_STORAGE_KEY.TIME);
+            localStorage.setItem(
+              LOCAL_STORAGE_KEY.IS_STARTED,
+              JSON.stringify(true)
+            );
             setIsStarted(true);
           }}
         >
