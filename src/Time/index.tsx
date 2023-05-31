@@ -1,5 +1,5 @@
 import React from "react";
-import useTimer from "./useTimer.ts";
+import useTimer from "../useTimer.ts";
 
 interface ITime {
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,18 +1,8 @@
 import { useState, useEffect } from "react";
 import Game from "./Game/index.tsx";
-import Time from "./Time.tsx";
+import Time from "./Time/index.tsx";
+import Mole from "./Mole/index.tsx";
 import "./App.scss";
-interface IMole {
-  active: boolean;
-  onclick: () => void;
-}
-function Mole({ active, onclick }: IMole) {
-  return (
-    <div className={`mole ${active ? "active" : ""} `} onClick={onclick}>
-      Mole
-    </div>
-  );
-}
 
 function App() {
   const [moles, setMoles] = useState<boolean[]>(Array(24).fill(false));
@@ -56,12 +46,12 @@ function App() {
       </div>
       <div>
         {molesRows.map((molesRow, index) => (
-          <div key={index} className={`row row-${index + 1}`}>
+          <div key={index}>
             {molesRow.map((active, i) => (
               <Mole
                 key={i}
                 active={active}
-                onclick={() => handleClick(index, i)}
+                onClick={() => handleClick(index, i)}
               />
             ))}
           </div>

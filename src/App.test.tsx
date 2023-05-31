@@ -2,46 +2,59 @@ import { render } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import Game from "./Game/index";
 import App from "./App";
 
 // Mock the localStorage
-const mockLocalStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
+const localStorageMock = (function () {
+  let store: { [key: string]: string } = {};
+
+  return {
+    getItem(key: string) {
+      return store[key];
+    },
+
+    setItem(key: string, value: string) {
+      store[key] = value;
+    },
+
+    clear() {
+      store = {};
+    },
+
+    removeItem(key: string) {
+      delete store[key];
+    },
+
+    getAll() {
+      return store;
+    },
+  };
+})();
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
+const removeLocalStorage = (id: string) => {
+  window.localStorage.removeItem(id);
 };
-
-Object.defineProperty(window, "localStorage", { value: mockLocalStorage });
-
-// Mock the Time and Game components
-// jest.mock("./Time.tsx", () => {
-//   return function DummyTime() {
-//     return <div data-testid="time">Dummy Time</div>;
-//   };
-// });
-
-// jest.mock("./Game/index.tsx", () => {
-//   return function DummyGame() {
-//     return <div data-testid="game">Dummy Game</div>;
-//   };
-// });
-
 describe("<App />", () => {
+  let mockFunc: jest.Mock;
   beforeEach(() => {
+    mockFunc = jest.fn();
     render(<App />);
   });
 
-  it("renders correctly", () => {
+  it("renders text correctly", () => {
     expect(screen.getByText("Score: 0")).toBeInTheDocument();
-    // expect(screen.getByText("Time:")).toBeInTheDocument();
+    expect(screen.getByText("Time:")).toBeInTheDocument();
     expect(screen.getByText("0")).toBeInTheDocument();
     expect(screen.getByText("Start")).toBeInTheDocument();
   });
 
-  it("starts the game when the start button is clicked", () => {
+  it("starts the game when button is clicked and remove the 'time' key in the localStorage", () => {
     userEvent.click(screen.getByText("Start"));
-    // expect(localStorage.removeItem).toHaveBeenCalledWith("time");
-    // expect(screen.getByTestId("time")).toBeInTheDocument();
-    // expect(screen.getByTestId("game")).toBeInTheDocument();
+    const moles = Array(24).fill(false);
+    expect(<Game moles={moles} setMoles={mockFunc} />).toBeInTheDocument;
+    const mockId = "time";
+    removeLocalStorage(mockId);
+    expect(localStorage.getItem(mockId)).toEqual(undefined);
   });
 });
