@@ -28,7 +28,7 @@ To avoid repetition and re-renders. As such, I broke the game down into several 
 3. Game Logic Handler - A component that manages all the game logic
 4. Time component - This has be be a standalone component and it needs to re-render every second
 
-#### 2. Game Board Design
+### 2. Game Board Design
 
 The gmae board is made up of 24 mole houses.I used an array containing subarrays to create rows, which are displayed using "flex".
 
@@ -57,7 +57,7 @@ The gmae board is made up of 24 mole houses.I used an array containing subarrays
 
 **Note:** The current version is not responsive
 
-#### 3. Mole Component
+## 3. Mole Component
 
 Each Mole component is unique and can be identified through its index. If the moles[index] is "true" (meaning it's currently visible), clicking on it will increase the player's score and make that mole disappear. However, if the mole is already "false" (not visible), clicking on it doesn't have any effect.
 
@@ -74,7 +74,7 @@ function handleClick(index: number) {
 }
 ```
 
-#### 4.Game Initiation
+## 4.Game Initiation
 
 The game begins when the 'start' button is clicked, triggering a state change in isStarted from false to true and thus loading the Game component.
 
@@ -91,19 +91,19 @@ The game begins when the 'start' button is clicked, triggering a state change in
 </button>
 ```
 
-### 5. Timer Functionality
+## 5. Timer Functionality
 
 On clicking the 'start' button and the change of isStarted state to true, the Time component loads. This component requires its own render, as it needs to update and display the current remaining time every second.
 .
 
-#### 6. Game Conclusion
+## 6. Game Conclusion
 
 The timer component uses the useTimer hook, where the countdown logic resides. This hook accepts a callback function and delay value as arguments. As it loads, it triggers the handleTimer function every second using setInterval. It also monitors the time state and saves the current time value in local storage. Once the countdown hits zero, the callback function executes, calling setIsStarted with false.
 
-#### 7. Game Functionality
+## 7. Game Functionality
 
 The Game component handles generating random moles and updating the moles state. Upon loading, it executes the generateAndUpdateRandomMole function every 1000ms. This function checks if there are more than 5 active moles. If not, it generates a random index number smaller than the moles array length, and updates the corresponding mole state to true. It also toggles the state back to false after 1-3 seconds to maintain
 
-#### 8. Clean Up Process
+## 8. Clean Up Process
 
 When a component is dismounted or removed, the timers (setTimeout, setInterval) are cancelled to prevent them from continuing to run in the background.
