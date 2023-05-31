@@ -8,11 +8,11 @@ interface IGame {
 }
 function Game({ moles, setMoles }: IGame) {
   useEffect(() => {
-    const intervalId = setInterval(activateRandomMole, 1000);
+    const intervalId = setInterval(generateAndUpdateRandomMole, 1000);
     return () => clearInterval(intervalId);
   }, [moles]);
 
-  function activateRandomMole() {
+  function generateAndUpdateRandomMole() {
     const activeMoles = moles.filter((mole) => mole).length;
     if (activeMoles >= 5) return;
     const index = Math.floor(Math.random() * moles.length);

@@ -5,7 +5,6 @@ import "@testing-library/jest-dom";
 import Game from "./Game/index";
 import App from "./App";
 
-// Mock the localStorage
 const localStorageMock = (function () {
   let store: { [key: string]: string } = {};
 
@@ -36,9 +35,9 @@ const removeLocalStorage = (id: string) => {
   window.localStorage.removeItem(id);
 };
 describe("<App />", () => {
-  let mockFunc: jest.Mock;
+  let setMoles: jest.Mock;
   beforeEach(() => {
-    mockFunc = jest.fn();
+    setMoles = jest.fn();
     render(<App />);
   });
 
@@ -52,7 +51,7 @@ describe("<App />", () => {
   it("starts the game when button is clicked and remove the 'time' key in the localStorage", () => {
     userEvent.click(screen.getByText("Start"));
     const moles = Array(24).fill(false);
-    expect(<Game moles={moles} setMoles={mockFunc} />).toBeInTheDocument;
+    expect(<Game moles={moles} setMoles={setMoles} />).toBeInTheDocument;
     const mockId = "time";
     removeLocalStorage(mockId);
     expect(localStorage.getItem(mockId)).toEqual(undefined);
