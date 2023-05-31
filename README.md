@@ -21,12 +21,12 @@ This interactive game features 24 mole houses arranged as depicted below (bad st
 
 ## 1. Game Development Breakdown
 
-To above repetition and re-renders. As such, I broke the game down into several components:
+To avoid repetition and re-renders. As such, I broke the game down into several components:
 
 1. Main component/page - Game Board the App page.
 2. Mole component - Multiple instances required
 3. Game Logic Handler - A component that manages all the game logic
-4. Time component - This has be be a standalone component ad it needs to re-render every second
+4. Time component - This has be be a standalone component and it needs to re-render every second
 
 #### 2. Game Board Design
 
@@ -58,8 +58,6 @@ The gmae board is made up of 24 mole houses.I used an array containing subarrays
 **Note:** The current version is not responsive
 
 #### 3. Mole Component
-
-Each mole component can be distinguished through index and only if the moles[index] is true, it increment the score in the state and set the mole false but if the mole[indix] is already false it doens't do anything.
 
 Each Mole component is unique and can be identified through its index. If the moles[index] is "true" (meaning it's currently visible), clicking on it will increase the player's score and make that mole disappear. However, if the mole is already "false" (not visible), clicking on it doesn't have any effect.
 
