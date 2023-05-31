@@ -1,33 +1,32 @@
-import { render, screen } from "@testing-library/react";
-// import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Mole from "../index";
 
 describe("<Mole />", () => {
-  let mockOnClick: jest.Mock;
+  let onclick: jest.Mock;
 
   beforeEach(() => {
-    mockOnClick = jest.fn();
+    onclick = jest.fn();
   });
 
-  it("renders correctly", () => {
-    render(<Mole active={false} onClick={mockOnClick} />);
+  it("renders <Mole /> correctly", () => {
+    render(<Mole active={false} onClick={onclick} />);
     expect(screen.getByText("Mole")).toBeInTheDocument();
   });
 
-  it("renders with active className when active prop is true", () => {
-    render(<Mole active={true} onClick={mockOnClick} />);
-    expect(screen.getByText("Mole")).toHaveClass("active");
+  it("renders with active className active prop value is true", () => {
+    render(<Mole active={true} onClick={onclick} />);
+    expect(screen.getByTestId("mole")).toHaveClass("active");
   });
 
   it("renders without active className when active prop is false", () => {
-    render(<Mole active={false} onClick={mockOnClick} />);
-    expect(screen.getByText("Mole")).not.toHaveClass("active");
+    render(<Mole active={false} onClick={onclick} />);
+    expect(screen.getByTestId("mole")).not.toHaveClass("active");
   });
 
-  //   it("calls the onClick handler when clicked", () => {
-  //     const mockOnClick = jest.fn();
-  //     render(<Mole active={false} onClick={mockOnClick} />);
-  //     userEvent.click(screen.getByText("Mole"));
-  //     expect(mockOnClick).toHaveBeenCalledTimes(1);
-  //   });
+  it("calls the onClick prop when the mole is clicked", async () => {
+    render(<Mole active={false} onClick={onclick} />);
+    await waitFor(() => userEvent.click(screen.getByTestId("mole")));
+    expect(onclick).toHaveBeenCalledTimes(1);
+  });
 });

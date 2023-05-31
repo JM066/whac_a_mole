@@ -5,7 +5,7 @@ interface IMole {
 function Mole({ active, onClick }: IMole) {
   return (
     <div
-      ata-testid="mole"
+      data-testid="mole"
       className={`mole ${active ? "active" : ""} `}
       onClick={onClick}
     >

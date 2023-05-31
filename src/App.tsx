@@ -46,17 +46,21 @@ function App() {
       </div>
       <div>
         {molesRows.map((molesRow, index) => (
-          <div key={index}>
+          <div key={index} className="row">
             {molesRow.map((active, i) => (
               <Mole
                 key={i}
                 active={active}
-                onClick={() => handleClick(index, i)}
+                onClick={() => {
+                  console.log("index", index, i);
+                  handleClick(index, i);
+                }}
               />
             ))}
           </div>
         ))}
         <div
+          className="start"
           onClick={() => {
             localStorage.removeItem("time");
             setIsStarted(true);
