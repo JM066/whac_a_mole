@@ -1,11 +1,11 @@
 # Whac-a-Mole Game
 
-Simple Whac-a-Mole Game!!!
+Welcome to my Simple Whac-a-Mole Game!
 This interactive game features 24 mole houses arranged as depicted below (bad styling alert!). The moles pop up randomly and will be visible through the background color. The players can gain points by clicking on the active moles as they appear. The game spans a duration of 60 seconds.
 
 ![Screenshot](./src/whac_a_mole.png)
 
-## User Story
+# User Story
 
 - The player initiates the game by hitting the 'start' button, which triggers the moles to appear randomly.
 - A countdown timer is displayed, starting from 60 seconds.
@@ -21,7 +21,7 @@ This interactive game features 24 mole houses arranged as depicted below (bad st
 
 ## 1. Game Development Breakdown
 
-To avoid repetition and re-renders. As such, I broke the game down into several components:
+To avoid repetitions and re-renders, I broke the game down into several components:
 
 1. Main component/page - Game Board the App page.
 2. Mole component - Multiple instances required
@@ -74,7 +74,7 @@ function handleClick(index: number) {
 }
 ```
 
-## 4.Game Initiation
+## 4. Game Initiation
 
 The game begins when the 'start' button is clicked, triggering a state change in isStarted from false to true and thus loading the Game component.
 
