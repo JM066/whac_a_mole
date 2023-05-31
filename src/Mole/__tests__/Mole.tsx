@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 // import userEvent from "@testing-library/user-event";
-import Mole from "../index"; // or the correct path to your Mole component
+import Mole from "../index";
 
 describe("<Mole />", () => {
   let mockOnClick: jest.Mock;

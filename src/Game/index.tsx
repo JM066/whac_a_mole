@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 interface IGame {
   moles: boolean[];
   setMoles: React.Dispatch<React.SetStateAction<boolean[]>>;
-
-  onclick?: () => void;
 }
 function Game({ moles, setMoles }: IGame) {
   useEffect(() => {
