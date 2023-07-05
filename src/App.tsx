@@ -1,61 +1,62 @@
-import { useState } from "react";
-import { LOCAL_STORAGE_KEY, GAMEBOARD_ROWS } from "./const.ts";
-import Game from "./Game/index.tsx";
-import Time from "./Time/index.tsx";
-import Mole from "./Mole/index.tsx";
+import { useState, useReducer } from "react";
+import reducer from "@/reducer";
+import getLocalStorage, {
+  removeLocalStorage,
+  setLocalStorage,
+} from "@/helpers/getTimer.ts";
+import Game from "@/component/Game";
+import Time from "@/component/Time";
+import Mole from "@/component/Mole";
+import Button from "@/component/Button";
+import Typography from "@/component/Typography";
+import { LOCAL_STORAGE_KEY, GAMEBOARD_ROWS } from "./app.type.ts";
 import "./App.scss";
 
 function App() {
-  const [moles, setMoles] = useState<boolean[]>(Array(24).fill(false));
-  const [score, setScore] = useState<number>(0);
-  const isStartedState = localStorage.getItem(LOCAL_STORAGE_KEY.IS_STARTED);
+  const [state, dispatch] = useReducer(reducer, {
+    score: 0,
+    moles: Array(24).fill(false),
+  });
+  const isStartedState = getLocalStorage(LOCAL_STORAGE_KEY.IS_STARTED);
   const [isStarted, setIsStarted] = useState<boolean>(
     isStartedState ? JSON.parse(isStartedState) : false
   );
 
-  function handleClick(index: number) {
-    if (moles[index]) {
-      setScore((prev) => prev + 1);
-      setMoles((prev) => {
-        const prevMolesState = [...prev];
-        prevMolesState[index] = false;
-        return prevMolesState;
-      });
-    }
-  }
+  const handleClick = (index: number) => {
+    dispatch({ type: "deactive", index });
+  };
+  const handleStart = () => {
+    removeLocalStorage(LOCAL_STORAGE_KEY.TIME);
+    setLocalStorage(LOCAL_STORAGE_KEY.IS_STARTED, JSON.stringify(true));
+    setIsStarted(true);
+  };
 
   return (
     <div className="App">
       <div className="header">
-        <p>Score: {score}</p>
-        Time: {isStarted ? <Time setIsStarted={setIsStarted} /> : <p>0</p>}
+        <Typography>Score: {state.score}</Typography>
+        <Typography>
+          Time:
+          {isStarted ? <Time setIsStarted={setIsStarted} /> : 0}
+        </Typography>
       </div>
       <div>
-        {GAMEBOARD_ROWS.map((row, index) => (
-          <div key={index} className="row">
-            {row.map((active, i) => (
+        {GAMEBOARD_ROWS.map((row, rowIndex) => (
+          <div key={`row-${rowIndex}`} className="row">
+            {row.map((active, activeIndex) => (
               <Mole
-                key={i}
-                active={moles[active]}
-                onClick={() => handleClick(active)}
+                key={`mole-${activeIndex}`}
+                active={state.moles[active]}
+                onClick={handleClick}
+                activeValue={active}
               />
             ))}
           </div>
         ))}
-        <button
-          className="start"
-          onClick={() => {
-            localStorage.removeItem(LOCAL_STORAGE_KEY.TIME);
-            localStorage.setItem(
-              LOCAL_STORAGE_KEY.IS_STARTED,
-              JSON.stringify(true)
-            );
-            setIsStarted(true);
-          }}
-        >
-          {isStarted && <Game moles={moles} setMoles={setMoles} />}
+        <Button className="start" onClick={handleStart}>
+          {isStarted && <Game state={state} dispatch={dispatch} />}
           Start
-        </button>
+        </Button>
       </div>
     </div>
   );

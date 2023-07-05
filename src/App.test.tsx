@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import Game from "./Game/index";
+import Game from "./component/Game/index";
 import App from "./App";
 
 const localStorageMock = (function () {

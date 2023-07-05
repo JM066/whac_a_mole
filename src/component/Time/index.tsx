@@ -1,18 +1,19 @@
 import React from "react";
-import { LOCAL_STORAGE_KEY } from "../const.ts";
-import useTimer from "../useTimer.ts";
+import getLocalStorage from "@/helpers/getTimer";
+import useTimer from "@/hook/useTimer";
+import { LOCAL_STORAGE_KEY } from "@/app.type";
 
 interface ITime {
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 function Time({ setIsStarted }: ITime) {
-  const timeState = localStorage.getItem(LOCAL_STORAGE_KEY.TIME);
+  const timeState = getLocalStorage(LOCAL_STORAGE_KEY.TIME);
   const { time } = useTimer(
     () => setIsStarted(false),
     timeState ? Number(timeState) : 60000
   );
 
-  return <p>{time}</p>;
+  return <>{time}</>;
 }
 
 export default Time;

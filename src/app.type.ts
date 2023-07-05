@@ -1,7 +1,3 @@
-export const LOCAL_STORAGE_KEY = {
-  TIME: "time",
-  IS_STARTED: "isStarted",
-};
 export const GAMEBOARD_ROWS = [
   [0, 1],
   [2, 3, 4, 5],
@@ -10,3 +6,7 @@ export const GAMEBOARD_ROWS = [
   [18, 19, 20, 21],
   [22, 23],
 ];
+export enum LOCAL_STORAGE_KEY {
+  TIME = "time",
+  IS_STARTED = "isStarted",
+}
