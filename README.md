@@ -1,11 +1,11 @@
 # Whac-a-Mole Game
 
 Welcome to my Simple Whac-a-Mole Game!
-This interactive game features 24 mole houses arranged as depicted below. The moles pop up randomly and will be visible through the background color. The players can gain points by clicking on the active moles as they appear. The game spans a duration of 60 seconds.
+This interactive game features 24 mole houses arranged as depicted below. Up to 5 moles pop up randomly and will be visible through the background color. The players can gain points by clicking on the active moles as they appear. The game spans a duration of 60 seconds and the countdown remains unaffected even if you hit the refresh button.
 
 ![Screenshot](./src/whac_a_mole.png)
 
-**Note:** No styling! only functional!
+**Note:** The game is currently functional, with no specific styling implemented.
 
 # User Story
 
@@ -61,8 +61,6 @@ export const GAMEBOARD_ROWS = [
   ));
 }
 ```
-
-**Note:** The current version is not responsive
 
 ## 3. Mole Component
 
