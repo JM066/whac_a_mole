@@ -62,8 +62,6 @@ export const GAMEBOARD_ROWS = [
 }
 ```
 
-**Note:** The current version is not responsive
-
 ## 3. Mole Component
 
 Each Mole component is unique and can be identified through its index. If the moles[index] is "true" (meaning it's currently visible), clicking on it will increase the player's score and make that mole disappear. However, if the mole is already "false" (not visible), clicking on it doesn't have any effect. To optimize application performance, I've chosen to utilize the useReducer hook instead of managing moles and score states with separate useState hooks. The useReducer hook allows me to handle these states within a single update function. This strategy significantly reduces the number of component re-renders, enhancing both the performance and readability of the code."
