@@ -5,7 +5,7 @@ This interactive game features 24 mole houses arranged as depicted below. Up to 
 
 ![Screenshot](./src/whac_a_mole.png)
 
-**Note:** No styling! only functional!
+**Note:** The game is currently functional, with no specific styling implemented.
 
 # User Story
 
