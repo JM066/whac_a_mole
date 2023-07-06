@@ -23,7 +23,7 @@ function App() {
   );
 
   const handleClick = (index: number) => {
-    dispatch({ type: "deactive", index });
+    dispatch({ type: "hit", index });
   };
   const handleStart = () => {
     removeLocalStorage(LOCAL_STORAGE_KEY.TIME);

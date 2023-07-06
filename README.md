@@ -70,7 +70,7 @@ Each Mole component is unique and can be identified through its index. If the mo
 
 ```js
 const handleClick = (index: number) => {
-  dispatch({ type: "deactive", index });
+  dispatch({ type: "hit", index });
 };
 
 export default function reducer(
@@ -79,7 +79,7 @@ export default function reducer(
 ): StateType {
   let newMoles;
   switch (action.type) {
-    case "deactive":
+    case "hit":
       if (state.moles[action.index]) {
         newMoles = [...state.moles];
         newMoles[action.index] = false;
@@ -89,6 +89,10 @@ export default function reducer(
     case "activate":
       newMoles = [...state.moles];
       newMoles[action.index] = true;
+      return { ...state, moles: newMoles };
+    case "deactivate":
+      newMoles = [...state.moles];
+      newMoles[action.index] = false;
       return { ...state, moles: newMoles };
     default:
       throw new Error("Unexpected action");

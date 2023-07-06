@@ -2,7 +2,8 @@
   "roots": ["<rootDir>"],
   "testEnvironment": "jsdom",
   "moduleNameMapper": {
-    "\\.(css|scss)$": "identity-obj-proxy"
+    "\\.(css|scss)$": "identity-obj-proxy",
+    "^@/(.*)$": "<rootDir>/src/$1"
   },
   "setupFilesAfterEnv": ["<rootDir>/jest-setup.ts"],
   "transform": {

@@ -21,7 +21,6 @@ describe("Time", () => {
       rerender(<Time setIsStarted={setIsStarted} />);
       jest.advanceTimersByTime(60000);
     });
-    rerender(<Time setIsStarted={setIsStarted} />);
     expect(setIsStarted).toHaveBeenCalledTimes(1);
     expect(setIsStarted).toHaveBeenCalledWith(false);
   });
