@@ -1,21 +1,10 @@
-import React from "react";
+import { ElementType } from "react"
 
-interface ITypography {
-  as?: React.ElementType;
+interface Props {
+  as?: ElementType
 }
-export default function Typography(
-  props: React.PropsWithChildren<ITypography>
-) {
-  const Text = props.as || "div";
-  const handleSize = () => {
-    if (props.as === "h1") {
-      return { fontSize: "20px" };
-    }
-    if (props.as === "h2") {
-      return { fontSize: "18px" };
-    }
-    return { fontSize: "16px" };
-  };
+export default function Typography(props: React.PropsWithChildren<Props>) {
+  const Text = props.as || "div"
 
-  return <Text style={handleSize()}>{props.children}</Text>;
+  return <Text>{props.children}</Text>
 }

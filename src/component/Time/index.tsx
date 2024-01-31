@@ -1,19 +1,13 @@
-import React from "react";
-import getLocalStorage from "@/helpers/getTimer";
-import useTimer from "@/hook/useTimer";
-import { LOCAL_STORAGE_KEY } from "@/app.type";
+import Typography from "@/component/Typography"
+import useTimer from "@/hook/useTimer"
 
-interface ITime {
-  setIsStarted: React.Dispatch<React.SetStateAction<boolean>>;
+interface Props {
+  stop: () => void
 }
-function Time({ setIsStarted }: ITime) {
-  const timeState = getLocalStorage(LOCAL_STORAGE_KEY.TIME);
-  const { time } = useTimer(
-    () => setIsStarted(false),
-    timeState ? Number(timeState) : 60000
-  );
+function Time({ stop }: Props) {
+  const { remainingTime } = useTimer(stop, 60)
 
-  return <>{time}</>;
+  return <Typography>{remainingTime}</Typography>
 }
 
-export default Time;
+export default Time

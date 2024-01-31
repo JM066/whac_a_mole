@@ -1,53 +1,16 @@
-import { render } from "@testing-library/react";
-import { screen } from "@testing-library/dom";
-import userEvent from "@testing-library/user-event";
-import "@testing-library/jest-dom";
-import Game from "./component/Game/index";
-import App from "./App";
+import { render } from "@testing-library/react"
+import { screen } from "@testing-library/dom"
+import userEvent from "@testing-library/user-event"
+import "@testing-library/jest-dom"
+import App from "./App"
 
-const localStorageMock = (function () {
-  let store: { [key: string]: string } = {};
-
-  return {
-    getItem(key: string) {
-      return store[key];
-    },
-
-    setItem(key: string, value: string) {
-      store[key] = value;
-    },
-
-    clear() {
-      store = {};
-    },
-
-    removeItem(key: string) {
-      delete store[key];
-    },
-  };
-})();
-Object.defineProperty(window, "localStorage", { value: localStorageMock });
-const removeLocalStorage = (id: string) => {
-  window.localStorage.removeItem(id);
-};
 describe("<App />", () => {
-  let dispatch: jest.Mock;
-  beforeEach(() => {
-    dispatch = jest.fn();
-    render(<App />);
-  });
-
-  it("renders text correctly", () => {
-    expect(screen.getByText("Score: 0")).toBeInTheDocument();
-    expect(screen.getByText("Start")).toBeInTheDocument();
-  });
-
-  it("starts the game when button is clicked and remove the 'time' key in the localStorage", () => {
-    userEvent.click(screen.getByText("Start"));
-    const state = { score: 0, moles: Array(24).fill(false) };
-    expect(<Game state={state} dispatch={dispatch} />).toBeInTheDocument;
-    const mockId = "time";
-    removeLocalStorage(mockId);
-    expect(localStorage.getItem(mockId)).toEqual(undefined);
-  });
-});
+  test("starts the game", async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const startButton = screen.getByRole("button", { name: /start/i })
+    await user.click(startButton)
+    const stopButton = screen.getByRole("button", { name: /stop/i })
+    expect(stopButton).toBeInTheDocument()
+  })
+})
