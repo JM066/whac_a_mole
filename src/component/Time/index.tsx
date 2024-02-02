@@ -7,7 +7,7 @@ interface Props {
 }
 function Time({ isStarted, stop }: Props) {
   const { time } = useTimer(isStarted, 60, stop)
-
+  //Todo: Add styling
   return <Typography>{time}</Typography>
 }
 

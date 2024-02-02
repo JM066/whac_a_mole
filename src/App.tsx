@@ -23,6 +23,7 @@ function App() {
     setIsStarted(false)
   }
   const addScore = () => {}
+  //Todo: Calculate scores
   return (
     <div className="App">
       <Time isStarted={isStarted} stop={stop} />
