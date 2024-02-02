@@ -1,30 +1,32 @@
 import { useState, useEffect } from "react"
 import * as Popover from "@radix-ui/react-popover"
 import { MixerHorizontalIcon, Cross2Icon } from "@radix-ui/react-icons"
-
-// import reducer from "@/reducer"
-import getLocalStorage, { removeLocalStorage, setLocalStorage } from "@/helpers/getTimer.ts"
 import Game from "@/component/Game"
-// import Time from "@/component/Time"
+import Time from "@/component/Time"
 import Button from "@/component/Button"
-// import Typography from "@/component/Typography"
-import { LOCAL_STORAGE_KEY } from "./app.type.ts"
+import { Key } from "./app.type.ts"
 import "./App.scss"
 
 function App() {
-  const status = getLocalStorage(LOCAL_STORAGE_KEY.IS_STARTED)
+  const status = localStorage.getItem(Key.IsStarted)
   const [isStarted, setIsStarted] = useState<boolean>(status != null ? JSON.parse(status) : false)
 
-  const handleStart = () => {
+  useEffect(() => {
+    localStorage.setItem(Key.IsStarted, isStarted.toString())
+  }, [isStarted])
+
+  const start = () => {
     setIsStarted((prev) => !prev)
   }
 
+  const stop = () => {
+    setIsStarted(false)
+  }
   const addScore = () => {}
   return (
     <div className="App">
-      HI
-      <div className="header">{/* <Typography>Score: {state.score}</Typography> */}</div>
-      <Button className="start" onClick={handleStart}>
+      <Time isStarted={isStarted} stop={stop} />
+      <Button className="start" onClick={start}>
         {isStarted ? "Stop" : "Start"}
       </Button>
       <Game isStarted={isStarted} addScore={addScore} />
@@ -67,7 +69,6 @@ function App() {
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>
-      {/* <Time stop={stop} /> */}
     </div>
   )
 }

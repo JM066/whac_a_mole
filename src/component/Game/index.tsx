@@ -20,8 +20,11 @@ function Game({ isStarted, speed = 1000, addScore }: Props) {
 
   const activateMoles = useCallback(() => {
     const activeMoles = moles.filter((mole) => mole).length
-    if (activeMoles > 5) return
-    const index = Math.floor(Math.random() * moles.length)
+    if (activeMoles >= 5) return
+    let index = Math.floor(Math.random() * moles.length)
+    while (moles[index]) {
+      index = Math.floor(Math.random() * moles.length)
+    }
     setMoles((prev) => {
       const arr = [...prev]
       arr[index] = true
@@ -36,6 +39,7 @@ function Game({ isStarted, speed = 1000, addScore }: Props) {
   }, [isStarted, activateMoles, speed])
 
   const updateStatus = (index: number) => {
+    if (!isStarted) return
     return function innerUpdateStatus() {
       setMoles((prev) => {
         const arr = [...prev]

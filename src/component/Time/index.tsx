@@ -2,12 +2,13 @@ import Typography from "@/component/Typography"
 import useTimer from "@/hook/useTimer"
 
 interface Props {
+  isStarted: boolean
   stop: () => void
 }
-function Time({ stop }: Props) {
-  const { remainingTime } = useTimer(stop, 60)
+function Time({ isStarted, stop }: Props) {
+  const { time } = useTimer(isStarted, 60, stop)
 
-  return <Typography>{remainingTime}</Typography>
+  return <Typography>{time}</Typography>
 }
 
 export default Time

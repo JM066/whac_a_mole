@@ -1,4 +1,4 @@
-export const LOCAL_STORAGE_KEY = {
-  TIME: "time",
-  IS_STARTED: "isStarted",
+export const Key = {
+  Time: "Time",
+  IsStarted: "IsStarted",
 } as const
