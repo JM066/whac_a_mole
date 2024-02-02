@@ -37,7 +37,6 @@ function Game({ isStarted, speed = 1000, addScore }: Props) {
 
   const updateStatus = (index: number) => {
     return function innerUpdateStatus() {
-      console.log("hit", index)
       setMoles((prev) => {
         const arr = [...prev]
         arr[index] = false
@@ -51,12 +50,7 @@ function Game({ isStarted, speed = 1000, addScore }: Props) {
       {GAMEBOARD_ROWS.map((row, idx) => (
         <div key={`row-${idx}`} className="row">
           {row.map((col) => (
-            <Mole
-              key={`col-${col}`}
-              status={moles[col]}
-              updateStatus={updateStatus(col)}
-              activeMole={col}
-            />
+            <Mole key={`col-${col}`} status={moles[col]} updateStatus={updateStatus(col)} />
           ))}
         </div>
       ))}
