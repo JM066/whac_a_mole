@@ -1,7 +1,5 @@
-import React, { useEffect, useCallback, useReducer } from "react"
-import { ActionType, StateType } from "@/reducer"
+import { useEffect, useCallback, useState } from "react"
 import Mole from "@/component/Mole"
-import reducer from "@/reducer"
 
 const GAMEBOARD_ROWS = [
   [0, 1],
@@ -13,44 +11,51 @@ const GAMEBOARD_ROWS = [
   [27, 28],
 ]
 interface Props {
-  state: StateType
   isStarted: boolean
-  dispatch: React.Dispatch<ActionType>
+  addScore: () => void
+  speed?: number
 }
-function Game({ state, dispatch, isStarted }: Props) {
-  const [state, dispatch] = useReducer(reducer, {
-    score: 0,
-    moles: Array(24).fill(false),
-  })
-  const generateAndUpdateRandomMole = useCallback(() => {
-    const activeMoles = state.moles.filter((mole) => mole).length
-    if (activeMoles >= 5) return
-    const index = Math.floor(Math.random() * state.moles.length)
-    dispatch({ type: "activate", index: index })
+function Game({ isStarted, speed = 1000, addScore }: Props) {
+  const [moles, setMoles] = useState<boolean[]>(Array(29).fill(false))
 
-    setTimeout(() => {
-      dispatch({ type: "deactivate", index: index })
-    }, 1000 * Math.random() * 2 + 1)
-  }, [state, dispatch])
+  const activateMoles = useCallback(() => {
+    const activeMoles = moles.filter((mole) => mole).length
+    if (activeMoles > 5) return
+    const index = Math.floor(Math.random() * moles.length)
+    setMoles((prev) => {
+      const arr = [...prev]
+      arr[index] = true
+      return arr
+    })
+  }, [moles])
 
   useEffect(() => {
-    const interval = setInterval(generateAndUpdateRandomMole, 1000)
+    if (!isStarted) return
+    const interval = setInterval(activateMoles, speed)
     return () => clearInterval(interval)
-  }, [generateAndUpdateRandomMole])
+  }, [isStarted, activateMoles, speed])
 
-  const hitMole = (index: number) => {
-    dispatch({ type: "hit", index })
+  const updateStatus = (index: number) => {
+    return function innerUpdateStatus() {
+      console.log("hit", index)
+      setMoles((prev) => {
+        const arr = [...prev]
+        arr[index] = false
+        return arr
+      })
+    }
   }
+
   return (
     <div>
-      {GAMEBOARD_ROWS.map((row, rowIndex) => (
-        <div key={`row-${rowIndex}`} className="row">
-          {row.map((active, activeIndex) => (
+      {GAMEBOARD_ROWS.map((row, idx) => (
+        <div key={`row-${idx}`} className="row">
+          {row.map((col) => (
             <Mole
-              key={`mole-${activeIndex}`}
-              active={state.moles[active]}
-              onClick={hitMole}
-              activeValue={active}
+              key={`col-${col}`}
+              status={moles[col]}
+              updateStatus={updateStatus(col)}
+              activeMole={col}
             />
           ))}
         </div>
