@@ -22,7 +22,7 @@ function App() {
   const stop = () => {
     setIsStarted(false)
   }
-  const addScore = () => {}
+
   //Todo: Calculate scores
   return (
     <div className="App">
@@ -30,7 +30,7 @@ function App() {
       <Button className="start" onClick={start}>
         {isStarted ? "Stop" : "Start"}
       </Button>
-      <Game isStarted={isStarted} addScore={addScore} />
+      <Game isStarted={isStarted} />
       <Popover.Root>
         <Popover.Trigger>
           <Button className="w-full bg-red-500" aria-label="Update dimensions">

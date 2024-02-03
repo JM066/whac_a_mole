@@ -1,4 +1,5 @@
 export const Key = {
-  Time: "Time",
-  IsStarted: "IsStarted",
+  Time: "time",
+  IsStarted: "is_started",
+  Score: "score",
 } as const

@@ -1,5 +1,7 @@
 import { useEffect, useCallback, useState } from "react"
 import Mole from "@/component/Mole"
+import Score from "@/component/Score"
+import { Key } from "@/app.type"
 
 const GAMEBOARD_ROWS = [
   [0, 1],
@@ -10,51 +12,82 @@ const GAMEBOARD_ROWS = [
   [23, 24, 25, 26],
   [27, 28],
 ]
+type Status = {
+  score: number
+  moles: boolean[]
+}
 interface Props {
   isStarted: boolean
-  addScore: () => void
   speed?: number
 }
-function Game({ isStarted, speed = 1000, addScore }: Props) {
-  const [moles, setMoles] = useState<boolean[]>(Array(29).fill(false))
-
-  const activateMoles = useCallback(() => {
-    const activeMoles = moles.filter((mole) => mole).length
-    if (activeMoles >= 5) return
-    let index = Math.floor(Math.random() * moles.length)
-    while (moles[index]) {
-      index = Math.floor(Math.random() * moles.length)
-    }
-    setMoles((prev) => {
-      const arr = [...prev]
-      arr[index] = true
-      return arr
-    })
-  }, [moles])
+function Game({ isStarted, speed = 1000 }: Props) {
+  const scoreState = localStorage.getItem(Key.Score)
+  const [status, setStatus] = useState<Status>({
+    score: Number(scoreState) || 0,
+    moles: Array(29).fill(false),
+  })
+  useEffect(() => {
+    localStorage.setItem(Key.Score, status.score.toString())
+  }, [status.score])
 
   useEffect(() => {
-    if (!isStarted) return
-    const interval = setInterval(activateMoles, speed)
+    if (isStarted) {
+      reset()
+      localStorage.removeItem(Key.Score)
+    }
+  }, [isStarted])
+
+  const activateMoles = useCallback(() => {
+    setStatus((prev) => {
+      if (prev.moles.filter((m) => m).length >= 5) return prev
+      let index
+      do {
+        index = Math.floor(Math.random() * prev.moles.length)
+      } while (prev.moles[index])
+      const newMoles = [...prev.moles]
+      newMoles[index] = true
+      return { ...prev, moles: newMoles }
+    })
+    //Todo: Deactivate each mole after a certan time
+  }, [status])
+
+  useEffect(() => {
+    let interval: number | NodeJS.Timeout
+    if (isStarted) {
+      interval = setInterval(activateMoles, speed)
+    }
     return () => clearInterval(interval)
   }, [isStarted, activateMoles, speed])
 
+  const reset = () => {
+    setStatus({
+      score: 0,
+      moles: Array(29).fill(false),
+    })
+  }
   const updateStatus = (index: number) => {
     if (!isStarted) return
+
     return function innerUpdateStatus() {
-      setMoles((prev) => {
-        const arr = [...prev]
-        arr[index] = false
-        return arr
+      setStatus((prev) => {
+        const newMoles = [...prev.moles]
+        let newScore = prev.score
+        if (newMoles[index]) {
+          newMoles[index] = false
+          newScore += 1
+        }
+        return { moles: newMoles, score: newScore }
       })
     }
   }
 
   return (
     <div>
+      <Score score={status.score} />
       {GAMEBOARD_ROWS.map((row, idx) => (
         <div key={`row-${idx}`} className="row">
           {row.map((col) => (
-            <Mole key={`col-${col}`} status={moles[col]} updateStatus={updateStatus(col)} />
+            <Mole key={`col-${col}`} mole={status.moles[col]} updateStatus={updateStatus(col)} />
           ))}
         </div>
       ))}

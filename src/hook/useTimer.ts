@@ -15,7 +15,6 @@ export default function useTimer(isStarted: boolean, duration: number, stop: () 
   useEffect(() => {
     if (time <= 0) {
       stop()
-      localStorage.removeItem(Key.Time)
     }
     localStorage.setItem(Key.Time, time.toString())
   }, [time, stop])
