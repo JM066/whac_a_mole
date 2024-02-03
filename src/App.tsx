@@ -1,37 +1,12 @@
-import { useState, useEffect } from "react"
-import * as Popover from "@radix-ui/react-popover"
-import { MixerHorizontalIcon, Cross2Icon } from "@radix-ui/react-icons"
 import Game from "@/component/Game"
-import Time from "@/component/Time"
-import Button from "@/component/Button"
-import { Key } from "./app.type.ts"
+
 import "./App.scss"
 
 function App() {
-  const status = localStorage.getItem(Key.IsStarted)
-  const [isStarted, setIsStarted] = useState<boolean>(status != null ? JSON.parse(status) : false)
-
-  useEffect(() => {
-    localStorage.setItem(Key.IsStarted, isStarted.toString())
-  }, [isStarted])
-
-  const start = () => {
-    setIsStarted((prev) => !prev)
-  }
-
-  const stop = () => {
-    setIsStarted(false)
-  }
-
-  //Todo: Calculate scores
   return (
     <div className="App">
-      <Time isStarted={isStarted} stop={stop} />
-      <Button className="start" onClick={start}>
-        {isStarted ? "Stop" : "Start"}
-      </Button>
-      <Game isStarted={isStarted} />
-      <Popover.Root>
+      <Game />
+      {/* <Popover.Root>
         <Popover.Trigger>
           <Button className="w-full bg-red-500" aria-label="Update dimensions">
             <MixerHorizontalIcon />
@@ -69,7 +44,7 @@ function App() {
             <Popover.Arrow className="PopoverArrow" />
           </Popover.Content>
         </Popover.Portal>
-      </Popover.Root>
+      </Popover.Root> */}
     </div>
   )
 }
