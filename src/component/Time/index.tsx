@@ -4,13 +4,13 @@ import useTimer from "@/hook/useTimer"
 interface Props {
   isStarted: boolean
   stop: () => void
-  time: number
+  initialTime: number
 }
-function Time({ isStarted, stop, time }: Props) {
-  const { timeStamp } = useTimer(isStarted, time, stop)
+function Time({ isStarted, stop, initialTime }: Props) {
+  const { time } = useTimer(isStarted, initialTime, stop)
 
   //Todo: Add styling
-  return <Typography>{timeStamp}</Typography>
+  return <Typography>{time}</Typography>
 }
 
 export default Time

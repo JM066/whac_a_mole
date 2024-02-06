@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react"
+import { useEffect, useCallback, useState, useRef } from "react"
 
 import Mole from "@/component/Mole"
 import Score from "@/component/Score"
@@ -20,23 +20,26 @@ type Status = {
   moles: boolean[]
 }
 
-function Game({ timer = 30, speed = 1000 }) {
-  // const playing = localStorage.getItem(Key.Playing)
+function Game({ timer = 10, speed = 1000 }) {
   const [isStarted, setIsStarted] = useState<boolean>(false)
-  // const [time, setTime] = useState<number>(0)
   const scoreState = localStorage.getItem(Key.Score)
   const [status, setStatus] = useState<Status>({
     score: Number(scoreState) || 0,
     moles: Array(29).fill(false),
   })
+  const interval = useRef<NodeJS.Timer | null>(null)
 
   const toggleStart = () => {
     setIsStarted((prev) => !prev)
   }
 
-  // const stop = () => {
-  //   setIsStarted(false)
-  // }
+  const stop = () => {
+    setIsStarted(false)
+  }
+
+  useEffect(() => {
+    if (isStarted) reset()
+  }, [isStarted])
 
   const activateMoles = useCallback(() => {
     setStatus((prev) => {
@@ -54,9 +57,9 @@ function Game({ timer = 30, speed = 1000 }) {
 
   const deactivateMoles = useCallback(
     (index: number) => {
-      console.log("index", index)
       if (!isStarted) return
       return function () {
+        console.log("hihihi", index)
         setStatus((prev) => {
           const newMoles = [...prev.moles]
           let newScore = prev.score
@@ -73,20 +76,27 @@ function Game({ timer = 30, speed = 1000 }) {
   //Todo: Cancel timer when the time is up
 
   useEffect(() => {
-    let interval: NodeJS.Timer
-
     if (isStarted) {
-      interval = setInterval(activateMoles, speed)
+      interval.current = setInterval(activateMoles, speed)
+    } else {
+      if (interval.current) {
+        clearInterval(interval.current)
+        interval.current = null
+      }
     }
-    return () => clearInterval(interval)
+    return () => {
+      if (interval.current) {
+        clearInterval(interval.current)
+      }
+    }
   }, [isStarted, activateMoles, speed])
 
-  // const reset = () => {
-  //   setStatus({
-  //     score: 0,
-  //     moles: Array(29).fill(false),
-  //   })
-  // }
+  const reset = () => {
+    setStatus({
+      score: 0,
+      moles: Array(29).fill(false),
+    })
+  }
   const updateStatus = (index: number) => {
     if (!isStarted) return
     return function () {
@@ -105,7 +115,7 @@ function Game({ timer = 30, speed = 1000 }) {
   return (
     <div>
       <Score score={status.score} />
-      <Time isStarted={isStarted} stop={stop} time={timer} />
+      <Time isStarted={isStarted} stop={stop} initialTime={timer} />
       <Button className="start" onClick={toggleStart}>
         {isStarted ? "Stop" : "Start"}
       </Button>

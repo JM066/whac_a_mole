@@ -1,33 +1,44 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 export default function useTimer(
   isStarted: boolean,
-  time: number,
+  initialTime: number,
   stop: () => void,
   interval: number = 1000
 ) {
-  const [timeStamp, setTimeStamp] = useState<number>(time)
+  const [time, setTime] = useState<number>(initialTime)
+  const timer = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
-    let timer: NodeJS.Timer
-    if (!isStarted) {
-      setTimeStamp(0)
+    if (timer.current) {
+      clearInterval(timer.current)
+      timer.current = undefined
+    }
+    if (isStarted) {
+      setTime(initialTime)
+      timer.current = setInterval(startCountdown, interval)
     } else {
-      setTimeStamp(10)
-      timer = setInterval(startCountdown, interval)
+      setTime(0)
     }
-    return () => clearInterval(timer)
-  }, [isStarted])
+
+    return () => {
+      if (timer.current) {
+        clearInterval(timer.current)
+      }
+    }
+  }, [isStarted, initialTime, interval])
 
   useEffect(() => {
-    if (timeStamp <= 0) {
+    if (time <= 0) {
+      clearInterval(timer.current)
+      timer.current = undefined
       stop()
-      console.log("stopped?")
     }
-  }, [timeStamp, stop])
+  }, [time])
 
   const startCountdown = () => {
-    setTimeStamp((prev) => Math.max(prev - 1, 0))
+    setTime((prev) => Math.max(prev - interval / 1000, 0))
   }
-  return { timeStamp }
+
+  return { time }
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 interface Props {
   mole: boolean
@@ -6,11 +6,14 @@ interface Props {
   deactivateMoles?: () => void
 }
 function Mole({ mole, updateStatus, deactivateMoles }: Props) {
+  const timer = useRef<ReturnType<typeof setInterval>>()
+
   useEffect(() => {
-    if (mole) {
-      const timer = setTimeout(() => deactivateMoles?.(), 1000)
-      return () => {
-        clearTimeout(timer)
+    if (!mole) return
+    timer.current = setTimeout(() => deactivateMoles?.(), 2000)
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current)
       }
     }
   }, [mole])
