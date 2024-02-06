@@ -1,26 +1,33 @@
 import { useState, useEffect } from "react"
-import { Key } from "@/app.type"
 
-export default function useTimer(isStarted: boolean, duration: number, stop: () => void) {
-  const timeState = localStorage.getItem(Key.Time)
-  const [time, setTime] = useState<number>(Number(timeState) || duration)
+export default function useTimer(
+  isStarted: boolean,
+  time: number,
+  stop: () => void,
+  interval: number = 1000
+) {
+  const [timeStamp, setTimeStamp] = useState<number>(time)
 
   useEffect(() => {
-    if (!isStarted) return
-    setTime(Number(localStorage.getItem(Key.Time)) || duration)
-    const interval = setInterval(startCountdown, 1000)
-    return () => clearInterval(interval)
+    let timer: NodeJS.Timer
+    if (!isStarted) {
+      setTimeStamp(0)
+    } else {
+      setTimeStamp(10)
+      timer = setInterval(startCountdown, interval)
+    }
+    return () => clearInterval(timer)
   }, [isStarted])
 
   useEffect(() => {
-    if (time <= 0) {
+    if (timeStamp <= 0) {
       stop()
+      console.log("stopped?")
     }
-    localStorage.setItem(Key.Time, time.toString())
-  }, [time, stop])
+  }, [timeStamp, stop])
 
   const startCountdown = () => {
-    setTime((prev) => Math.max(prev - 1, 0))
+    setTimeStamp((prev) => Math.max(prev - 1, 0))
   }
-  return { time }
+  return { timeStamp }
 }

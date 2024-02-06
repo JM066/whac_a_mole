@@ -1,10 +1,11 @@
 import { useEffect, useCallback, useState } from "react"
+
 import Mole from "@/component/Mole"
 import Score from "@/component/Score"
 import Time from "@/component/Time"
 import Button from "@/component/Button"
 import { Key } from "@/app.type"
-const SPEED = 1000
+
 const GAMEBOARD_ROWS = [
   [0, 1],
   [2, 3, 4, 5],
@@ -19,36 +20,23 @@ type Status = {
   moles: boolean[]
 }
 
-function Game() {
-  const playing = localStorage.getItem(Key.Playing)
-  const [isStarted, setIsStarted] = useState<boolean>(playing != null ? JSON.parse(playing) : false)
+function Game({ timer = 30, speed = 1000 }) {
+  // const playing = localStorage.getItem(Key.Playing)
+  const [isStarted, setIsStarted] = useState<boolean>(false)
+  // const [time, setTime] = useState<number>(0)
   const scoreState = localStorage.getItem(Key.Score)
   const [status, setStatus] = useState<Status>({
     score: Number(scoreState) || 0,
     moles: Array(29).fill(false),
   })
-  useEffect(() => {
-    localStorage.setItem(Key.Playing, isStarted.toString())
-  }, [isStarted])
 
-  useEffect(() => {
-    localStorage.setItem(Key.Score, status.score.toString())
-  }, [status.score])
-
-  useEffect(() => {
-    if (isStarted) {
-      reset()
-      localStorage.removeItem(Key.Score)
-    }
-  }, [isStarted])
-
-  const start = () => {
+  const toggleStart = () => {
     setIsStarted((prev) => !prev)
   }
 
-  const stop = () => {
-    setIsStarted(false)
-  }
+  // const stop = () => {
+  //   setIsStarted(false)
+  // }
 
   const activateMoles = useCallback(() => {
     setStatus((prev) => {
@@ -64,20 +52,41 @@ function Game() {
     })
   }, [status])
 
+  const deactivateMoles = useCallback(
+    (index: number) => {
+      console.log("index", index)
+      if (!isStarted) return
+      return function () {
+        setStatus((prev) => {
+          const newMoles = [...prev.moles]
+          let newScore = prev.score
+          if (newMoles[index]) {
+            newMoles[index] = false
+            newScore
+          }
+          return { moles: newMoles, score: newScore }
+        })
+      }
+    },
+    [status]
+  )
+  //Todo: Cancel timer when the time is up
+
   useEffect(() => {
-    let interval: ReturnType<typeof setInterval>
+    let interval: NodeJS.Timer
+
     if (isStarted) {
-      interval = setInterval(activateMoles, SPEED)
+      interval = setInterval(activateMoles, speed)
     }
     return () => clearInterval(interval)
-  }, [isStarted, activateMoles, SPEED])
+  }, [isStarted, activateMoles, speed])
 
-  const reset = () => {
-    setStatus({
-      score: 0,
-      moles: Array(29).fill(false),
-    })
-  }
+  // const reset = () => {
+  //   setStatus({
+  //     score: 0,
+  //     moles: Array(29).fill(false),
+  //   })
+  // }
   const updateStatus = (index: number) => {
     if (!isStarted) return
     return function () {
@@ -96,14 +105,19 @@ function Game() {
   return (
     <div>
       <Score score={status.score} />
-      <Time isStarted={isStarted} stop={stop} />
-      <Button className="start" onClick={start}>
+      <Time isStarted={isStarted} stop={stop} time={timer} />
+      <Button className="start" onClick={toggleStart}>
         {isStarted ? "Stop" : "Start"}
       </Button>
       {GAMEBOARD_ROWS.map((row, idx) => (
         <div key={`row-${idx}`} className="row">
           {row.map((col) => (
-            <Mole key={`col-${col}`} mole={status.moles[col]} updateStatus={updateStatus(col)} />
+            <Mole
+              key={`col-${col}`}
+              mole={status.moles[col]}
+              updateStatus={updateStatus(col)}
+              deactivateMoles={deactivateMoles(col)}
+            />
           ))}
         </div>
       ))}
