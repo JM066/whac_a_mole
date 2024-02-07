@@ -1,16 +1,18 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, memo } from "react"
 import { motion } from "framer-motion"
+
 interface Props {
   mole: boolean
+  speed: number
   updateStatus?: () => void
-  deactivateMoles?: () => void
+  deactivateMoles: () => void
 }
-function Mole({ mole, updateStatus, deactivateMoles }: Props) {
+function Mole({ mole, speed, updateStatus, deactivateMoles }: Props) {
   const timer = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
     if (!mole) return
-    timer.current = setTimeout(() => deactivateMoles?.(), 2000)
+    timer.current = setTimeout(deactivateMoles, speed)
     return () => {
       if (timer.current) {
         clearTimeout(timer.current)
@@ -37,4 +39,4 @@ function Mole({ mole, updateStatus, deactivateMoles }: Props) {
     </div>
   )
 }
-export default Mole
+export default memo(Mole)

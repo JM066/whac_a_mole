@@ -1,10 +1,9 @@
-import { useEffect, useCallback, useState, useRef } from "react"
+import { useEffect, useCallback, useState, useRef, useMemo } from "react"
 
 import Mole from "@/component/Mole"
 import Score from "@/component/Score"
 import Time from "@/component/Time"
 import Button from "@/component/Button"
-import { Key } from "@/app.type"
 
 const GAMEBOARD_ROWS = [
   [0, 1],
@@ -20,28 +19,43 @@ type Status = {
   moles: boolean[]
 }
 
-function Game({ timer = 10, speed = 1000 }) {
+function Game({ timer = 20, speed = 1000 }) {
   const [isStarted, setIsStarted] = useState<boolean>(false)
-  const scoreState = localStorage.getItem(Key.Score)
   const [status, setStatus] = useState<Status>({
-    score: Number(scoreState) || 0,
+    score: 0,
     moles: Array(29).fill(false),
   })
-  const interval = useRef<NodeJS.Timer | null>(null)
-
-  const toggleStart = () => {
-    setIsStarted((prev) => !prev)
-  }
-
-  const stop = () => {
-    setIsStarted(false)
-  }
+  const interval = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
-    if (isStarted) reset()
-  }, [isStarted])
+    if (isStarted) {
+      reset()
+      interval.current = setInterval(popUp, speed)
+    } else {
+      if (interval.current) {
+        clearInterval(interval.current)
+        interval.current = undefined
+      }
+    }
+    return () => {
+      if (interval.current) {
+        clearInterval(interval.current)
+      }
+    }
+  }, [isStarted, speed])
 
-  const activateMoles = useCallback(() => {
+  const toggleStart = () => setIsStarted((prev) => !prev)
+
+  const stop = () => setIsStarted(false)
+
+  const reset = () => {
+    setStatus({
+      score: 0,
+      moles: Array(29).fill(false),
+    })
+  }
+
+  const popUp = () => {
     setStatus((prev) => {
       if (prev.moles.filter((m) => m).length >= 5) return prev
       let index: number
@@ -50,54 +64,24 @@ function Game({ timer = 10, speed = 1000 }) {
       } while (prev.moles[index])
       const newMoles = [...prev.moles]
       newMoles[index] = true
-
       return { ...prev, moles: newMoles }
     })
-  }, [status])
-
-  const deactivateMoles = useCallback(
-    (index: number) => {
-      if (!isStarted) return
-      return function () {
-        console.log("hihihi", index)
-        setStatus((prev) => {
-          const newMoles = [...prev.moles]
-          let newScore = prev.score
-          if (newMoles[index]) {
-            newMoles[index] = false
-            newScore
-          }
-          return { moles: newMoles, score: newScore }
-        })
-      }
-    },
-    [status]
-  )
-  //Todo: Cancel timer when the time is up
-
-  useEffect(() => {
-    if (isStarted) {
-      interval.current = setInterval(activateMoles, speed)
-    } else {
-      if (interval.current) {
-        clearInterval(interval.current)
-        interval.current = null
-      }
-    }
-    return () => {
-      if (interval.current) {
-        clearInterval(interval.current)
-      }
-    }
-  }, [isStarted, activateMoles, speed])
-
-  const reset = () => {
-    setStatus({
-      score: 0,
-      moles: Array(29).fill(false),
-    })
   }
-  const updateStatus = (index: number) => {
+
+  const hide = useCallback((index: number) => {
+    return function () {
+      setStatus((prev) => {
+        const newMoles = [...prev.moles]
+        if (newMoles[index]) {
+          newMoles[index] = false
+          return { ...prev, moles: newMoles }
+        }
+        return prev
+      })
+    }
+  }, [])
+
+  const whack = (index: number) => {
     if (!isStarted) return
     return function () {
       setStatus((prev) => {
@@ -125,8 +109,9 @@ function Game({ timer = 10, speed = 1000 }) {
             <Mole
               key={`col-${col}`}
               mole={status.moles[col]}
-              updateStatus={updateStatus(col)}
-              deactivateMoles={deactivateMoles(col)}
+              speed={speed}
+              updateStatus={whack(col)}
+              deactivateMoles={hide(col)}
             />
           ))}
         </div>
