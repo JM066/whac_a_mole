@@ -4,15 +4,15 @@ import { motion } from "framer-motion"
 interface Props {
   mole: boolean
   speed: number
-  updateStatus?: () => void
-  deactivateMoles: () => void
+  whack?: () => void
+  hide: () => void
 }
-function Mole({ mole, speed, updateStatus, deactivateMoles }: Props) {
+function Mole({ mole, speed, whack, hide }: Props) {
   const timer = useRef<ReturnType<typeof setInterval>>()
 
   useEffect(() => {
     if (!mole) return
-    timer.current = setTimeout(deactivateMoles, speed)
+    timer.current = setTimeout(hide, speed)
     return () => {
       if (timer.current) {
         clearTimeout(timer.current)
@@ -25,7 +25,7 @@ function Mole({ mole, speed, updateStatus, deactivateMoles }: Props) {
     <div className="w-20 h-20 bg-gray-100">
       <motion.div
         className="bg-green-500 cursor-pointer"
-        onClick={updateStatus}
+        onClick={whack}
         animate={{
           x: 0,
           y: mole ? 10 : 30,

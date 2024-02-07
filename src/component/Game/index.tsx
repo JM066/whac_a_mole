@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState, useRef, useMemo } from "react"
+import { useEffect, useCallback, useState, useRef } from "react"
 
 import Mole from "@/component/Mole"
 import Score from "@/component/Score"
@@ -19,7 +19,7 @@ type Status = {
   moles: boolean[]
 }
 
-function Game({ timer = 20, speed = 1000 }) {
+function Game({ timer = 20, speed = 1500 }) {
   const [isStarted, setIsStarted] = useState<boolean>(false)
   const [status, setStatus] = useState<Status>({
     score: 0,
@@ -110,8 +110,8 @@ function Game({ timer = 20, speed = 1000 }) {
               key={`col-${col}`}
               mole={status.moles[col]}
               speed={speed}
-              updateStatus={whack(col)}
-              deactivateMoles={hide(col)}
+              whack={whack(col)}
+              hide={hide(col)}
             />
           ))}
         </div>
