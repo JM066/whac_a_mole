@@ -68,22 +68,26 @@ function Game({ timer = 20, speed = 1500 }) {
     })
   }
 
-  const hide = useCallback((index: number) => {
-    return function () {
-      setStatus((prev) => {
-        const newMoles = [...prev.moles]
-        if (newMoles[index]) {
-          newMoles[index] = false
-          return { ...prev, moles: newMoles }
-        }
-        return prev
-      })
-    }
-  }, [])
+  const hide = useCallback(
+    (index: number) =>
+      function innerHide() {
+        console.log("index", index)
+        setStatus((prev) => {
+          const newMoles = [...prev.moles]
+          if (newMoles[index]) {
+            newMoles[index] = false
+            return { ...prev, moles: newMoles }
+          }
+          return prev
+        })
+      },
+    []
+  )
 
-  const whack = (index: number) => {
-    if (!isStarted) return
-    return function () {
+  const whack = (index: number) =>
+    function innerWhack() {
+      if (!isStarted) return
+      console.log("whack", index)
       setStatus((prev) => {
         const newMoles = [...prev.moles]
         let newScore = prev.score
@@ -94,7 +98,6 @@ function Game({ timer = 20, speed = 1500 }) {
         return { moles: newMoles, score: newScore }
       })
     }
-  }
 
   return (
     <div>
