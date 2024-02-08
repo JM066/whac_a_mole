@@ -71,7 +71,6 @@ function Game({ timer = 20, speed = 1500 }) {
   const hide = useCallback(
     (index: number) =>
       function innerHide() {
-        console.log("index", index)
         setStatus((prev) => {
           const newMoles = [...prev.moles]
           if (newMoles[index]) {
@@ -87,7 +86,6 @@ function Game({ timer = 20, speed = 1500 }) {
   const whack = (index: number) =>
     function innerWhack() {
       if (!isStarted) return
-      console.log("whack", index)
       setStatus((prev) => {
         const newMoles = [...prev.moles]
         let newScore = prev.score
