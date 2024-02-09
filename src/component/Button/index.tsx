@@ -1,9 +1,9 @@
-interface IButton {
+interface Props {
   onClick?: () => void
   className: string
 }
 //Todo: Add more props
-function Button({ onClick, className, children }: React.PropsWithChildren<IButton>) {
+function Button({ onClick, className, children }: React.PropsWithChildren<Props>) {
   return (
     <button data-testid="mole" className={className} onClick={onClick}>
       {children}

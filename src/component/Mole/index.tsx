@@ -1,18 +1,52 @@
-import { useEffect, useRef, memo } from "react"
+import { useEffect, useRef, memo, useState } from "react"
 import { motion } from "framer-motion"
 
 interface Props {
-  mole: boolean
+  isStarted: boolean
+  initialMole: boolean
   speed: number
-  whack?: () => void
-  hide: () => void
+  addPoint: () => void
 }
-function Mole({ mole, speed, whack, hide }: Props) {
-  const timer = useRef<ReturnType<typeof setInterval>>()
+function Mole({ isStarted, initialMole, speed, addPoint }: Props) {
+  const timer = useRef<ReturnType<typeof setTimeout>>()
+  const [mole, setMole] = useState<boolean>(initialMole)
 
   useEffect(() => {
-    if (!mole) return
-    timer.current = setTimeout(hide, speed)
+    if (!isStarted) {
+      setMole(false)
+    }
+  }, [isStarted])
+
+  useEffect(() => {
+    if (isStarted) {
+      const random = Math.floor(Math.random() * speed)
+      timer.current = setTimeout(popUp, random * 1000)
+    } else {
+      if (timer.current) {
+        clearTimeout(timer.current)
+        timer.current = undefined
+      }
+    }
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+      }
+    }
+  }, [isStarted])
+
+  const popUp = () => {
+    setMole(true)
+  }
+  useEffect(() => {
+    if (mole) {
+      const random = Math.floor(Math.random() * 2 + 4)
+      timer.current = setTimeout(hide, random * 1000)
+    } else {
+      if (timer.current) {
+        clearTimeout(timer.current)
+        timer.current = undefined
+      }
+    }
     return () => {
       if (timer.current) {
         clearTimeout(timer.current)
@@ -20,6 +54,13 @@ function Mole({ mole, speed, whack, hide }: Props) {
     }
   }, [mole])
 
+  const hide = () => setMole(false)
+
+  const whack = () => {
+    if (!mole) return
+    setMole(false)
+    addPoint()
+  }
   return (
     //Todo: Add mole icons and styling
     <div className="w-20 h-20 bg-gray-100">
