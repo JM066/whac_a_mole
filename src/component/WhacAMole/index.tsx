@@ -5,7 +5,7 @@ import Score from "@/component/Score"
 import Time from "@/component/Time"
 import Button from "@/component/Button"
 
-function Game({ timer = 20, speed = 20, points = 2 }) {
+function WhacAMole({ timer = 20, speed = 20, points = 2 }) {
   const [isStarted, setIsStarted] = useState<boolean>(false)
   const [score, setScore] = useState<number>(0)
 
@@ -28,4 +28,4 @@ function Game({ timer = 20, speed = 20, points = 2 }) {
   )
 }
 
-export default Game
+export default WhacAMole
