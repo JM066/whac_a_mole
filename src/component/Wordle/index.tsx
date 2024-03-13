@@ -5,21 +5,32 @@ function Key({ letter, status }: { letter: string; status: string }) {
   return <div className={`tile ${status}`}>{letter}</div>
 }
 
-function Row({ solution, guess }: { solution: string; guess: string[] }) {
+function Row({
+  solution,
+  guess,
+  isSubmitted,
+}: {
+  solution: string
+  guess: string
+  isSubmitted: boolean
+}) {
   const emptyTiles = Array.from({ length: 5 - guess.length })
 
-  const check = ({ letter, index }: { letter: string; index: number }) => {
+  const check = (letter: string, index: number) => {
+    if (!isSubmitted) return ""
     if (solution[index] === letter) return "correct"
     else if (solution.includes(letter)) return "close"
     else {
       return "incorrect"
     }
   }
+
   return (
     <div className="line">
-      {guess.map((letter, i) => (
-        <Key key={i} letter={letter} status={check(letter, i)} />
-      ))}
+      {guess?.split("").map((letter, i) => {
+        const status = check(letter, i)
+        return <Key key={i} letter={letter} status={status} />
+      })}
       {emptyTiles.map((_, i) => (
         <Key key={i} letter={""} status={""} />
       ))}
@@ -36,19 +47,21 @@ export default function Wordle() {
   }, [])
 
   useEffect(() => {
-    let newGuesses = [...guesses]
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Enter") {
         if (currentGuess.length === 5 && guesses.length < 6) {
-          newGuesses.push(currentGuess.toUpperCase())
+          setGuesses((prev) => {
+            let newGuesses = [...prev]
+            newGuesses.push(currentGuess.toUpperCase())
+            return newGuesses
+          })
           setCurrentGuess("")
         }
       } else if (e.key === "Backspace" || e.key === "Delete") {
-        setCurrentGuess((prev) => prev.slice(0, prev.length - 1))
+        setCurrentGuess((prev) => prev.slice(0, -1))
       } else if (currentGuess.length < 5 && /^[a-zA-Z]$/.test(e.key)) {
         setCurrentGuess((prev) => prev + e.key.toUpperCase())
       }
-      setGuesses(newGuesses)
     }
 
     document.addEventListener("keydown", onKeyDown)
@@ -65,15 +78,16 @@ export default function Wordle() {
       console.log(error)
     }
   }
+
   return (
     <div className="board">
       {guesses.map((guess, i) => (
-        <Row key={i} solution={solution} guess={guess.split("")} />
+        <Row key={i} solution={solution} guess={guess} isSubmitted={true} />
       ))}
-      dd
-      {currentGuess && <Row solution={solution} guess={currentGuess.split("")} />}
-      {Array.from({ length: 6 - guesses.length }, (_, index) => (
-        <Row key={`empty-${index}`} solution={solution} guess={[]} />
+
+      {guesses.length < 6 && <Row solution={solution} guess={currentGuess} isSubmitted={false} />}
+      {Array.from({ length: 5 - guesses.length }, (_, index) => (
+        <Row key={`empty-${index}`} solution={solution} guess="" isSubmitted={false} />
       ))}
     </div>
   )
