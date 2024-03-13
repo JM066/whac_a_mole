@@ -1,6 +1,5 @@
+import { getWords } from "@/services/wordle.service"
 import { useState, useEffect } from "react"
-
-const WORD_LIST_API_URL = "https://api.frontendexpert.io/api/fe/wordle-words"
 
 function Key({ letter, status }: { letter: string; status: string }) {
   return <div className={`tile ${status}`}>{letter}</div>
@@ -60,8 +59,7 @@ export default function Wordle() {
 
   const fetchWords = async () => {
     try {
-      const response = await fetch(WORD_LIST_API_URL)
-      const words = await response.json()
+      const words = await getWords()
       setSolution(words[Math.floor(Math.random() * words.length)])
     } catch (error) {
       console.log(error)
@@ -72,6 +70,7 @@ export default function Wordle() {
       {guesses.map((guess, i) => (
         <Row key={i} solution={solution} guess={guess.split("")} />
       ))}
+      dd
       {currentGuess && <Row solution={solution} guess={currentGuess.split("")} />}
       {Array.from({ length: 6 - guesses.length }, (_, index) => (
         <Row key={`empty-${index}`} solution={solution} guess={[]} />
